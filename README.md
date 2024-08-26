@@ -59,7 +59,6 @@ Once started, the bot will be active and ready to use in your Discord server.
 Chat: Send messages directly to the bot or mention it in a server to start a conversation.
 Send Images: Directly send images to the bot.
 /draw: Use /draw at the start of a message to request an image based on your description.
-Contributing
 Contributions are welcome! Please follow these steps:
 
 ## Fork the repository.
