@@ -55,6 +55,28 @@ To start the bot, use:
    ```
 Once started, the bot will be active and ready to use in your Discord server.
 
+&nbsp;
+## 🚨 Important Note 🚨
+
+**To change the bot's name, personality, and behaviors, you need to edit the `basePersonality` section in the `src/Utils/personalityManager.mjs` file. This customization is crucial for personalizing the bot to fit your needs.**
+
+&nbsp;
+## Bot Related Images
+
+Here are some images showcasing the functionality of the Gemini - Discord SelfBot:
+
+1. **Direct Messages (DMs)**  
+   ![Direct Messages](readmePic/dmMsg.png)  
+   *Shows the bot interacting in Direct Messages (DMs).*
+
+2. **Group and Server Messages**  
+   ![Group and Server Messages](readmePic/group-serverMsg.png)  
+   *Demonstrates the bot's interaction in groups and server channels.*
+
+3. **Recognizing Users**  
+   ![Recognizing Users](readmePic/recognizeUsers.png)  
+   *Highlights the bot's capability to recognize users and address them by their names.*
+
 ## Bot Commands
 Chat: Send messages directly to the bot or mention it in a server to start a conversation.
 Send Images: Directly send images to the bot.
