@@ -1,0 +1,19 @@
+{
+	"name": "gbot",
+	"version": "1.0.0",
+	"type": "module",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "",
+	"license": "ISC",
+	"description": "",
+	"dependencies": {
+		"@google/generative-ai": "^0.17.1",
+		"axios": "^1.7.5",
+		"discord.js-selfbot-v13": "^3.3.0",
+		"dotenv": "^16.4.5",
+		"winston": "^3.14.2"
+	}
+}
