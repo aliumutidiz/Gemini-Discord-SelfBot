@@ -77,6 +77,10 @@ Here are some images showcasing the functionality of the Gemini - Discord SelfBo
    ![Recognizing Users](readmePic/recognizeUsers.png)  
    *Highlights the bot's capability to recognize users and address them by their names.*
 
+4. **/draw Messages**  
+   ![Recognizing Users](readmePic/drawMsg.png)  
+   *Shows the bot's ability to draw an image based on a given description.*
+
 ## Bot Commands
 Chat: Send messages directly to the bot or mention it in a server to start a conversation.
 Send Images: Directly send images to the bot.
