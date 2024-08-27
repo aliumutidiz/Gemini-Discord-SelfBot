@@ -4,9 +4,16 @@ import { getChatHistory, saveChatHistories, cleanChatHistory } from "../Utils/ch
 import { splitMessage } from "../Utils/helpers.mjs";
 import { getModel } from "./modelConfig.mjs";
 
+import dotenv from "dotenv";
+dotenv.config();
+const AdminDiscordID = process.env.ADMIN_DISCORD_ID;
+
 async function processMessage(message, DiscordBotID) {
 	const model = getModel(); // Modelin global olarak güncellenmesi gerekiyorsa dışarıdan alınabilir
-	const messageContent = `{${message.author.id}}` + message.content.replace(`<@${DiscordBotID}>`, "").trim();
+	const messageContent =
+		message.author.id === AdminDiscordID
+			? `{${message.author.id}-admin}` + message.content.replace(`<@${DiscordBotID}>`, "").trim()
+			: `{${message.author.id}}` + message.content.replace(`<@${DiscordBotID}>`, "").trim();
 	const channel = message.channel;
 	const chatHistory = getChatHistory(channel.id);
 	chatHistory.push({ role: "user", parts: [{ text: messageContent }] });

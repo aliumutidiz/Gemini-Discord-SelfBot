@@ -1,6 +1,8 @@
 /** @format */
 import { Client as DiscordClient, RichPresence, CustomStatus } from "discord.js-selfbot-v13";
 import { client } from "../index.mjs";
+import dotenv from "dotenv";
+dotenv.config();
 
 // Function to set up Rich Presence and custom status
 export async function SetupRichPresence() {

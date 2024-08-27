@@ -1,14 +1,19 @@
 /** @format */
 
-// gemini/imageProcessor.mjs
-
 import { urlToBase64, splitMessage } from "../Utils/helpers.mjs";
 import { getModel } from "./modelConfig.mjs";
+
+import dotenv from "dotenv";
+dotenv.config();
+const AdminDiscordID = process.env.ADMIN_DISCORD_ID;
 
 async function processImageMessage(message, DiscordBotID) {
 	const model = getModel();
 	const attachments = message.attachments;
-	const messageContent = `{${message.author.id}}` + message.content.replace(`<@${DiscordBotID}>`, "").trim();
+	const messageContent =
+		message.author.id === AdminDiscordID
+			? `{${message.author.id}-admin}` + message.content.replace(`<@${DiscordBotID}>`, "").trim()
+			: `{${message.author.id}}` + message.content.replace(`<@${DiscordBotID}>`, "").trim();
 
 	if (attachments.size > 0) {
 		for (const [, attachment] of attachments) {
