@@ -1,19 +1,21 @@
 /**
- * IMPORTANT NOTICE:
  *
- * If you intend to modify the bot's personality, please proceed with caution.
- * While changing variables like `BotName`, `DeveloperName`, and `DeveloperDiscordUsername`
- * according to your preferences is perfectly fine and won't cause any issues,
- * altering the `BasePersonality` section requires special attention.
+ * IMPORTANT:
  *
- * The `BasePersonality` section is critical because it instructs the bot on how to adhere to
- * Discord's rules, recognize specific users, and handle message history properly.
- * Any mistakes or improper changes in this area can result in unexpected behavior, such as the bot
- * failing to recognize users or incorrectly processing messages.
+ * If you want to modify the bot's personality, there are important things to consider.
+ * Changing `BotName`, `DeveloperName`, and `DeveloperDiscordUsername` according to your preferences is fine.
+ * However, if you intend to modify the `BasePersonality` section, be cautious. This section is crucial for teaching the bot
+ * about Discord rules, its structure, recognizing individuals, and handling message history.
+ * Altering it improperly could result in odd behaviors, such as the bot failing to recognize users.
+ * To prevent this, make sure to modify the bot's personality without disrupting its core structure.
  *
- * To avoid these issues, make sure to maintain the fundamental structure while making
- * personality adjustments. This will ensure the bot continues to operate smoothly and
- * appropriately within the Discord environment.
+ *
+ * How Personality Processing Works:
+ *
+ * The `BasePersonality` is dynamically regenerated continuously. During each regeneration, information about the people
+ * the bot has interacted with is appended to the core personality defined in `BasePersonality`. This allows the bot to
+ * recognize and remember the individuals it interacts with. Additionally, this information is supported and enriched by
+ * `chatHistory`, which helps in maintaining context and ensuring smoother and more personalized conversations.
  *
  * @format
  */

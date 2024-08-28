@@ -9,16 +9,16 @@ export async function urlToBase64(url) {
 	return buffer.toString("base64"); // Convert buffer to base64 string
 }
 
-// Function to split long texts into 2000-character chunks
+// Function to split long texts into 1990-character chunks
 export function splitMessage(text) {
-	const MAX_LENGTH = 1999; // Maximum length
+	const MAX_LENGTH = 1990; // Maximum length
 	const parts = []; // Array to hold the chunks
 
 	while (text.length > MAX_LENGTH) {
 		let chunk = text.slice(0, MAX_LENGTH); // Get the first chunk of text
 		const lastNewLine = chunk.lastIndexOf("\n"); // Find the position of the last newline character
 
-		// If the 2000th character is in the middle of a word, cut at the last space
+		// If the 1990th character is in the middle of a word, cut at the last space
 		if (lastNewLine > 0) {
 			chunk = text.slice(0, lastNewLine);
 		}
