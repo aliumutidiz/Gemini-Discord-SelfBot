@@ -3,7 +3,7 @@
 import fs from "fs";
 
 // File path for the JSON data
-const dataFilePath = "./src/Data/playerHistories.json";
+const dataFilePath = "./src/Data/userHistories.json";
 
 // Read data from the JSON file or create a new one if it doesn't exist
 function readData() {

@@ -24,7 +24,7 @@ export async function SetupRichPresence() {
 			.setAssetsLargeImage(getExtendURL[0].external_asset_path) // Set the large image in Rich Presence
 			.setAssetsLargeText("Do you want to talk to me? 😁") // Set the text for the large image
 			.setPlatform("android") // Set the platform where the activity is occurring
-			.addButton("GitHub", "https://github.com/aliumutidiz/"); // Add a button with a label and URL
+			.addButton("GitHub", "https://github.com/aliumutidiz/Gemini-Discord-SelfBot"); // Add a button with a label and URL
 
 		// Create and configure a new Custom Status instance
 		const custom = new CustomStatus(client)

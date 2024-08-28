@@ -1,6 +1,6 @@
 /** @format */
 
-import { getUsersFromGroup } from "./playerHistory.mjs";
+import { getUsersFromGroup } from "./userHistory.mjs";
 import { GetBasePersonality } from "../Config/CreateBasePersonality.mjs";
 
 const channelMessageCounts = {}; // Tracking message counts for each channel
