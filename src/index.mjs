@@ -129,8 +129,12 @@ client.on("messageCreate", async (message) => {
 	}
 	// For all other messages, update chat history
 	else {
-		updateChatHistory(channel.id, "user", messageContent);
-		updateChatHistory(channel.id, "user", messageContent);
+		const HistoryMessage =
+			message.author.id === ADMIN_DISCORD_ID
+				? `{${message.author.id}-admin}` + message.content.replace(`<@${DiscordBotID}>`, "").trim()
+				: `{${message.author.id}}` + message.content.replace(`<@${DiscordBotID}>`, "").trim();
+		updateChatHistory(channel.id, "user", HistoryMessage);
+		updateChatHistory(channel.id, "user", HistoryMessage);
 	}
 });
 

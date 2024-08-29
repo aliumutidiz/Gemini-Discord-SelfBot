@@ -2,6 +2,7 @@
 
 import { urlToBase64, splitMessage } from "../Utils/helpers.mjs";
 import { getModel } from "./modelConfig.mjs";
+import { safetySettings } from "./geminiClient.mjs";
 
 import dotenv from "dotenv";
 dotenv.config();

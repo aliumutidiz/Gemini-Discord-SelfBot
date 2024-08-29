@@ -3,6 +3,7 @@
 import { getChatHistory, saveChatHistories, cleanChatHistory } from "../Utils/chatHistory.mjs";
 import { splitMessage } from "../Utils/helpers.mjs";
 import { getModel } from "./modelConfig.mjs";
+import { safetySettings } from "./geminiClient.mjs";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -20,6 +21,7 @@ async function processMessage(message, DiscordBotID) {
 
 	const chat = model.startChat({
 		history: chatHistory,
+		safetySettings,
 	});
 
 	try {

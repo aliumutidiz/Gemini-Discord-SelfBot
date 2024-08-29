@@ -1,8 +1,6 @@
 /** @format */
 
-// gemini/modelConfig.mjs
-
-import genAI from "./geminiClient.mjs";
+import { genAI, safetySettings } from "./geminiClient.mjs";
 
 // Varsayılan kişilik
 let currentPersonality = "Auto";
@@ -18,5 +16,6 @@ export function getModel() {
 	return genAI.getGenerativeModel({
 		model: GeminiModel,
 		systemInstruction: currentPersonality,
+		safetySettings,
 	});
 }
