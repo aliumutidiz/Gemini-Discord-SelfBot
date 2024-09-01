@@ -37,6 +37,7 @@ client.on("messageCreate", async (message) => {
 	// Ignore messages from the bot itself
 	if (message.author.id === DiscordBotID) return;
 	if (message.author.bot) return;
+	if (message.content.includes("@here") || message.content.includes("@everyone")) return;
 	if (message.mentions.has(client.user) && (await isUserBlacklisted(message.author.id))) {
 		await message.react("⛔");
 		return;
@@ -62,22 +63,29 @@ client.on("messageCreate", async (message) => {
 
 	// If the message is a mention of the bot with no attachments, reply with a question mark
 	if (message.content === `<@${DiscordBotID}>` && message.attachments.size === 0) {
-		await message.channel.sendTyping();
-		setTimeout(async () => {
-			await message.reply("?");
-		}, 1500);
+		try {
+			await message.channel.sendTyping();
+			setTimeout(async () => {
+				await message.reply("?");
+			}, 1500);
+		} catch (error) {}
 		return;
 	}
 	// If the message is from the admin and the content is "clearchatdata", reset chat history
 	else if (message.author.id === ADMIN_DISCORD_ID && messageContent === "clearchatdata") {
 		await resetChatHistory(message);
 	}
-	// If the message is from the admin and the content is "clearuserdata", remove group data and react with thumbs up
+	// If the message is from the admin and the content is "clearuserdata", remove group data
 	else if (message.author.id === ADMIN_DISCORD_ID && messageContent === "clearuserdata") {
 		await removeGroup(channelId);
 		await message.react("👍");
 	}
-	//
+	// If the message is from the admin and the content is "clearchanneldata", remove group data and reset chat history
+	else if (message.author.id === ADMIN_DISCORD_ID && messageContent === "clearchanneldata") {
+		await removeGroup(channelId);
+		await resetChatHistory(message);
+	}
+	// Black list
 	else if (message.author.id === ADMIN_DISCORD_ID && messageContent.split(" ")[0] === "blacklist") {
 		if (messageContent.split(" ")[1] === "add") {
 			await addUserToBlacklist(messageContent.split(" ")[2]);
@@ -87,7 +95,6 @@ client.on("messageCreate", async (message) => {
 			await message.react("👍");
 		}
 	}
-
 	// If the message mentions the bot and starts with "/draw", create an image from the prompt
 	else if (messageContent.split(" ")[0] === "/draw" && (message.mentions.has(client.user) || message.channel.type === "DM")) {
 		try {

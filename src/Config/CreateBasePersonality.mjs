@@ -182,5 +182,5 @@ You are in a group on Discord, and the information given below belongs to the us
 `;
 
 export function GetBasePersonality() {
-	return BasePersonalityV4;
+	return BasePersonalityV2;
 }
