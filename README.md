@@ -89,7 +89,9 @@ ___
 ## • Admin Commands:
 - **clearuserdata**: Use this command in any channel to delete the data of users in that channel.
 - **clearchatdata**: Use this command in any channel to delete the chat history in that channel.
-
+- **clearchanneldata**: clearuserdata + clearchatdata
+- **blacklist add <channelID/UserID>** : Commands from the added channel or person are ignored.
+- **blacklist remove <channelID/UserID>** : I'm too lazy to explain.
 ___
 
 ## Fork the repository.
