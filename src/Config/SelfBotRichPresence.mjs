@@ -14,7 +14,7 @@ export async function SetupRichPresence() {
 
 		// Create and configure a new Rich Presence instance
 		const status = new RichPresence(client)
-			.setApplicationId("427511108006576129") // Set the application ID (e.g., for a specific app or bot)
+			.setApplicationId(client.user.id) // Set the application ID (e.g., for a specific app or bot)
 			.setType("STREAMING") // Set the activity
 			.setURL("https://www.youtube.com/@maou0") // Setting URL changes the type
 			.setState("Yes! I'm a bot.") // Set the status message
