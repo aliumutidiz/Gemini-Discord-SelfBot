@@ -38,6 +38,7 @@ client.on("messageCreate", async (message) => {
 	if (message.author.id === DiscordBotID) return;
 	if (message.author.bot) return;
 	if (message.content.includes("@here") || message.content.includes("@everyone")) return;
+	if (await isUserBlacklisted(message.channel.id)) return;
 	if (message.mentions.has(client.user) && (await isUserBlacklisted(message.author.id))) {
 		await message.react("⛔");
 		return;
@@ -72,16 +73,16 @@ client.on("messageCreate", async (message) => {
 		return;
 	}
 	// If the message is from the admin and the content is "clearchatdata", reset chat history
-	else if (message.author.id === ADMIN_DISCORD_ID && messageContent === "clearchatdata") {
+	else if (messageContent === "clearchatdata" && (message.channel.type === "DM" || message.author.id === ADMIN_DISCORD_ID)) {
 		await resetChatHistory(message);
 	}
 	// If the message is from the admin and the content is "clearuserdata", remove group data
-	else if (message.author.id === ADMIN_DISCORD_ID && messageContent === "clearuserdata") {
+	else if (messageContent === "clearuserdata" && (message.channel.type === "DM" || message.author.id === ADMIN_DISCORD_ID)) {
 		await removeGroup(channelId);
 		await message.react("👍");
 	}
 	// If the message is from the admin and the content is "clearchanneldata", remove group data and reset chat history
-	else if (message.author.id === ADMIN_DISCORD_ID && messageContent === "clearchanneldata") {
+	else if (messageContent === "clearchanneldata" && (message.channel.type === "DM" || message.author.id === ADMIN_DISCORD_ID)) {
 		await removeGroup(channelId);
 		await resetChatHistory(message);
 	}
@@ -134,6 +135,7 @@ client.on("messageCreate", async (message) => {
 			}
 		}
 	}
+
 	// For all other messages, update chat history
 	else {
 		const HistoryMessage =
