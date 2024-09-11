@@ -4,6 +4,7 @@ import { getChatHistory, saveChatHistories, cleanChatHistory } from "../Utils/ch
 import { splitMessage } from "../Utils/helpers.mjs";
 import { getModel } from "./modelConfig.mjs";
 import { safetySettings } from "./geminiClient.mjs";
+import { FormatAnswer } from "../Utils/responseFormatter.mjs";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -30,7 +31,7 @@ async function processMessage(message, DiscordBotID) {
 		const responseParts = splitMessage(responseText);
 
 		for (const part of responseParts) {
-			await message.reply(part + "** ** ");
+			await message.reply(await FormatAnswer(part + " ** ** "));
 		}
 
 		chatHistory.push({
