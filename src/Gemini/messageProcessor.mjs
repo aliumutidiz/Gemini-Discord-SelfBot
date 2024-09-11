@@ -31,7 +31,7 @@ async function processMessage(message, DiscordBotID) {
 		const responseParts = splitMessage(responseText);
 
 		for (const part of responseParts) {
-			await message.reply(await FormatAnswer(part + " ** ** "));
+			await message.reply(await FormatAnswer(part + " ** ** ", message));
 		}
 
 		chatHistory.push({
