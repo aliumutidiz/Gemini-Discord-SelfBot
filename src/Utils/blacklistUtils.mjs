@@ -75,19 +75,23 @@ export async function removeUserFromBlacklist(user) {
 	}
 }
 
-// Checks if a user is in the blacklist
+// Checks if a user or channel is in the blacklist
 export async function isUserBlacklisted(user) {
 	try {
-		const blacklist = await readJsonFile();
+		const blacklist = await readJsonFile(); // JSON dosyasından kara liste verilerini okur
 		if (Array.isArray(blacklist)) {
 			// Ensure the data is an array
-			return blacklist.includes(user);
+			const userId = `<@${user}>`; // Extract user ID from <@user> format
+			const channelId = `<#${user}>`; // Extract channel ID from <#channel> format
+
+			// Check if the user or channel ID is in the blacklist
+			return blacklist.includes(user) || blacklist.includes(userId) || blacklist.includes(channelId);
 		} else {
 			console.error("Blacklist data is not an array. Cannot check user.");
-			return false;
+			return false; // Data is not an array, so user is not blacklisted
 		}
 	} catch (error) {
-		console.error("An error occurred while checking if a user is blacklisted:", error);
-		return false;
+		console.error("An error occurred while checking if a user or channel is blacklisted:", error);
+		return false; // An error occurred, so user is not blacklisted
 	}
 }
