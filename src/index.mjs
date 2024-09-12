@@ -147,6 +147,22 @@ client.on("messageCreate", async (message) => {
 	}
 });
 
+//#region == uncaughtException and unhandledRejection handlers ==
+
+// Catches all unhandled promise rejections
+process.on("unhandledRejection", (reason, promise) => {
+	console.error("Unhandled Rejection at:", promise, "reason:", reason);
+	// You can add logic here to ignore the error or handle it
+});
+
+// Catches all uncaught exceptions
+process.on("uncaughtException", (err) => {
+	console.error("Uncaught Exception:", err);
+	// You can add logic here to ignore the error or handle it
+});
+
+//#endregion
+
 //#region == DISCORD BOT START & READY ==
 
 // Event triggered when the bot is ready
