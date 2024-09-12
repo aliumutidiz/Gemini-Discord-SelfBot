@@ -6,9 +6,11 @@
 
 - **Chat Anywhere**: Interact with the bot in DMs, groups, or servers. To use the bot in servers, you must mention it.
 - **Image Sending**: You can send images to the bot directly.
-- **Drawing Requests**: By adding `/draw` at the beginning of your message, you can request the bot to draw an image based on your description.
+- **Drawing Requests**: It can do that when you ask it to draw something.
+- **Drawing Requests2**: By adding `/draw` at the beginning of your message, you can request the bot to draw an image based on your description.
 - **Memory**: The bot remembers the last 100 messages from channels it interacts with.
 - **Personalization**: The bot can recognize users and address them by their names.
+- **EpicGames Free Games**: It can tell you about the free games on Epic Games. (I don't know why I added that.)
 ___
 ## • Requirements
 
