@@ -45,7 +45,11 @@ client.on("messageCreate", async (message) => {
 	}
 
 	// Handle the message and check if the personality has been updated
-	const [updated, personality] = handleMessage(message.channel.id);
+	let updated;
+	let personality;
+	if (message.mentions.has(client.user) || message.channel.type === "DM") {
+		[updated, personality] = handleMessage(message.channel.id);
+	}
 
 	// Update user data
 	const channel = message.channel;
