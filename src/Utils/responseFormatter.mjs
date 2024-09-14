@@ -2,6 +2,7 @@
 
 import { getFreeGamesString } from "../Extras/EpicGamesFreeGames.mjs";
 import { waitForImageCreation } from "./generateImageUtils.mjs";
+import { GetRandomImageUrl } from "../Extras/PrntScGetRandomImage.mjs";
 
 /**
  * Formats the provided answer by handling special placeholders and
@@ -21,6 +22,20 @@ export async function FormatAnswer(answer, message) {
 	if (formattedAnswer.includes("{epicgames-free-game}")) {
 		const gamesList = await getFreeGamesString();
 		formattedAnswer = formattedAnswer.replace("{epicgames-free-game}", gamesList);
+	}
+	// Handle the {prntsc-random-image} placeholder: Get PrntSc RandomImage Url
+	if (formattedAnswer.includes("{prntsc-random-image}")) {
+		// Start the image generation process asynchronously
+		try {
+			const targetSrc = "st.prntscr.com/2023/07/24/0635/img/0_173a7b_211be8ff.png";
+			let prntScRanomImageUrl = "...";
+			await GetRandomImageUrl(targetSrc)
+				.then(async (src) => (prntScRanomImageUrl = src))
+				.catch(async (error) => (prntScRanomImageUrl = error));
+			formattedAnswer = formattedAnswer.replace("{prntsc-random-image}", `[*](${prntScRanomImageUrl})`);
+		} catch (error) {
+			formattedAnswer = formattedAnswer.replace("{prntsc-random-image}", "{An unexpected error occurred while taking the picture.}");
+		}
 	}
 	// Handle the {draw-image} placeholder: Trigger image generation process
 	else if (drawMatch && drawMatch[1]) {

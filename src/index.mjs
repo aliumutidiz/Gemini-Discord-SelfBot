@@ -173,7 +173,7 @@ client.on("messageCreate", async (message) => {
 					await message.channel.sendTyping();
 					setTimeout(async () => {
 						await processMessage(message, DiscordBotID);
-					}, 500); // Delay to handle rapid message bursts
+					}, 350); // Delay to handle rapid message bursts
 				} catch (error) {
 					console.error("Error processing message:", error);
 					cleanChatHistory(message.channel.id);
