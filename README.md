@@ -95,8 +95,8 @@ ___
 - **clearchanneldata**: clearuserdata + clearchatdata
 - **blacklist add <channelID/UserID>** : Commands from the added channel or person are ignored.
 - **blacklist remove <channelID/UserID>** : I'm too lazy to explain.
-- **trigger add <Value>** : You can customize what messages the bot will respond to using this command. For example, if you add "hi", the bot will respond to any message that contains "hi".
-- **trigger remove <Value>** : Yes.
+- **trigger add <Value> ** : You can customize what messages the bot will respond to using this command. For example, if you add "hi", the bot will respond to any message that contains "hi".
+- **trigger remove <Value> ** : Yes.
 ___
 
 ## Fork the repository.
