@@ -7,7 +7,7 @@
 - **Chat Anywhere**: Interact with the bot in DMs, groups, or servers. To use the bot in servers, you must mention it.
 - **Image Sending**: You can send images to the bot directly.
 - **Drawing Requests**: It can do that when you ask it to draw something.
-- **Drawing Requests2**: By adding `/draw` at the beginning of your message, you can request the bot to draw an image based on your description.
+- **Drawing Requests 2**: By adding `/draw` at the beginning of your message, you can request the bot to draw an image based on your description.
 - **Memory**: The bot remembers the last 100 messages from channels it interacts with.
 - **Personalization**: The bot can recognize users and address them by their names.
 - **EpicGames Free Games**: It can tell you about the free games on Epic Games. (I don't know why I added that.)
@@ -95,8 +95,8 @@ ___
 - **clearchanneldata**: clearuserdata + clearchatdata
 - **blacklist add <channelID/UserID>** : Commands from the added channel or person are ignored.
 - **blacklist remove <channelID/UserID>** : I'm too lazy to explain.
-- **trigger add <Value> ** : You can customize what messages the bot will respond to using this command. For example, if you add "hi", the bot will respond to any message that contains "hi".
-- **trigger remove <Value> ** : Yes.
+- **trigger add \<Value\>** : You can customize what messages the bot will respond to using this command. For example, if you add "hi", the bot will respond to any message that contains "hi".
+- **trigger remove \<Value\>** : Yes.
 ___
 
 ## Fork the repository.
