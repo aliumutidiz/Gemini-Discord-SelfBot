@@ -96,7 +96,7 @@ client.on("messageCreate", async (message) => {
 
 	// Add message to the channel-specific queue for processing
 	addToQueue(channelId, message, async (message) => {
-		let Trigger = false;
+		let Trigger = true;
 		let updated;
 		let personality;
 		if (Trigger || message.channel.type === "DM") {
