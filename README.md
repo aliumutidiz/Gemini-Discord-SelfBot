@@ -11,6 +11,7 @@
 - **Memory**: The bot remembers the last 100 messages from channels it interacts with.
 - **Personalization**: The bot can recognize users and address them by their names.
 - **EpicGames Free Games**: It can tell you about the free games on Epic Games. (I don't know why I added that.)
+- **Random screenshot**: You can ask it to give you a random screenshot. :3
 ___
 ## • Requirements
 
