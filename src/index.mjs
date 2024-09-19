@@ -9,6 +9,7 @@ import { checkImageStatus, waitForImageCreation } from "./Utils/generateImageUti
 import { SetupRichPresence } from "./Config/SelfBotRichPresence.mjs";
 import { saveChatHistories, loadChatHistories, resetChatHistory, cleanChatHistory, updateChatHistory, getChatHistory } from "./Utils/chatHistory.mjs";
 import { addUserToBlacklist, removeUserFromBlacklist, isUserBlacklisted } from "./Utils/blacklistUtils.mjs";
+import { addTriggerWord, removeTriggerWord, checkMessageForWords, loadData, saveData } from "./Modules/triggerManager.mjs";
 
 // Import required classes from the discord.js-selfbot-v13 library
 import { Client as DiscordClient } from "discord.js-selfbot-v13";
@@ -95,9 +96,10 @@ client.on("messageCreate", async (message) => {
 
 	// Add message to the channel-specific queue for processing
 	addToQueue(channelId, message, async (message) => {
+		let Trigger = false;
 		let updated;
 		let personality;
-		if (message.mentions.has(client.user) || message.channel.type === "DM") {
+		if (Trigger || message.channel.type === "DM") {
 			[updated, personality] = handleMessage(message.channel.id);
 		}
 
@@ -113,6 +115,8 @@ client.on("messageCreate", async (message) => {
 			console.log(`New personality for channel ${channelId}:`);
 			setModelPersonality(personality);
 		}
+
+		Trigger = message.mentions.has(client.user) || (await checkMessageForWords(messageContent));
 
 		// Respond to bot mentions with no attachments
 		if (message.content === `<@${DiscordBotID}>` && message.attachments.size === 0) {
@@ -142,10 +146,18 @@ client.on("messageCreate", async (message) => {
 				await removeUserFromBlacklist(messageContent.split(" ")[2]);
 				await message.react("👍");
 			}
+		} else if (message.author.id === ADMIN_DISCORD_ID && messageContent.split(" ")[0] == "trigger") {
+			if (messageContent.split(" ")[1] == "add") {
+				addTriggerWord(messageContent.split(" ")[2]);
+				await message.react("👍");
+			} else if (messageContent.split(" ")[1] == "remove") {
+				removeTriggerWord(messageContent.split(" ")[2]);
+				await message.react("👍");
+			}
 		}
 
 		// Handle image generation command
-		else if (messageContent.split(" ")[0] === "/draw" && (message.mentions.has(client.user) || message.channel.type === "DM")) {
+		else if (messageContent.split(" ")[0] === "/draw" && (Trigger || message.channel.type === "DM")) {
 			try {
 				await message.channel.sendTyping();
 				const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(messageContent.replace(`/draw`, ""))}`;
@@ -163,7 +175,7 @@ client.on("messageCreate", async (message) => {
 		}
 
 		// Process messages in other cases
-		else if (message.mentions.has(client.user) || message.channel.type === "DM") {
+		else if (Trigger || message.channel.type === "DM") {
 			if (!messageContent && message.attachments.size === 0) return;
 			if (message.attachments.size > 0) {
 				await message.channel.sendTyping();
@@ -178,6 +190,14 @@ client.on("messageCreate", async (message) => {
 					console.error("Error processing message:", error);
 					cleanChatHistory(message.channel.id);
 				}
+			}
+		}
+
+		// Handle test command
+		else if (messageContent.split(" ")[0] === "/draw" && (Trigger || message.channel.type === "DM")) {
+			try {
+			} catch (error) {
+				await message.reply("Error");
 			}
 		}
 
@@ -216,7 +236,9 @@ client.on("ready", async () => {
 	DiscordBotID = client.user.id;
 	// Load chat histories
 	loadChatHistories();
+	loadData();
 });
+
 // Custom status settings for the selfbot
 await SetupRichPresence();
 

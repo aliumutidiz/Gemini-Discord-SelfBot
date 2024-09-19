@@ -4,7 +4,7 @@ import { getChatHistory, saveChatHistories, cleanChatHistory } from "../Utils/ch
 import { splitMessage } from "../Utils/helpers.mjs";
 import { getModel } from "./modelConfig.mjs";
 import { safetySettings } from "./geminiClient.mjs";
-import { FormatAnswer } from "../Utils/responseFormatter.mjs";
+import { FormatAnswer } from "../Modules/responseFormatter.mjs";
 
 import dotenv from "dotenv";
 dotenv.config();

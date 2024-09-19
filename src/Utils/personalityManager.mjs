@@ -13,9 +13,24 @@ function generateGBotPersonality(channelId) {
 	// Fetch user information from the specified channel
 	const users = getUsersFromGroup(channelId);
 
+	const now = new Date();
+	const year = now.getFullYear();
+	const month = now.getMonth() + 1;
+	const day = now.getDate();
+	const hour = now.getHours();
+	const minute = now.getMinutes();
+
 	let userInfo = "";
 	if (users.length > 0) {
-		userInfo = "Currently, you are in a group where the following members are present:\n";
+		userInfo = `Channel ID of the message sent:${channelId}\n
+		Current time information:
+			year: "${year}"
+			month: "${month}"
+			day: "${day}"
+			hour: "${hour}"
+			minute: "${minute}" 
+		\nCurrently, you are in a group where the following members are present:\n`;
+
 		// Append each user's information to the userInfo string
 		users.forEach((userString) => {
 			userInfo += `${userString}\n`;
@@ -51,8 +66,8 @@ function handleMessage(channelId) {
 	// Increment the message count for the current channel
 	channelMessageCounts[channelId] += 1;
 
-	// Update personality every 5 messages
-	if (channelMessageCounts[channelId] % 5 === 0) {
+	// Update personality every 1 messages
+	if (channelMessageCounts[channelId] % 1 === 0) {
 		const personality = generateGBotPersonality(channelId);
 		updated = true; // Indicate that personality has been updated
 		return [updated, personality];

@@ -1,7 +1,7 @@
 /** @format */
 
 import { getFreeGamesString } from "../Extras/EpicGamesFreeGames.mjs";
-import { waitForImageCreation } from "./generateImageUtils.mjs";
+import { waitForImageCreation } from "../Utils/generateImageUtils.mjs";
 import { GetRandomImageUrl } from "../Extras/PrntScGetRandomImage.mjs";
 
 /**
