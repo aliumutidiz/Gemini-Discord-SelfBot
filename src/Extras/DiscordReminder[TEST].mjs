@@ -1,135 +1,177 @@
-/** @format
+/** @format */
+
+// reminders.mjs
+import { readFileSync, writeFileSync, existsSync } from "fs";
+
+const filePath = "./reminders.json"; // Path to the JSON file
+
+/**
+ * Loads the reminders from the JSON file. If the file doesn't exist,
+ * it returns an empty object.
  *
- *
- *
- *
- *  -----------------------------------------------------
- *
- *
- *
- *  -----------     THIS IS A TEST FILE      ------------
- *
- *
- * ------------------------------------------------------
- *
- *
- *
- *
- *
- *
+ * @returns {Object} The loaded reminders and unused IDs.
  */
+export function loadReminders() {
+	if (existsSync(filePath)) {
+		try {
+			const data = readFileSync(filePath, "utf8");
+			return JSON.parse(data);
+		} catch (error) {
+			unusedIds: [];
+		}
+	}
+	return { unusedIds: [] }; // If file doesn't exist, return an empty structure
+}
 
-import fs from "fs";
+/**
+ * Saves the current reminders and unused IDs to the JSON file.
+ *
+ * @param {Object} data - The reminders and unused IDs data to save.
+ */
+export function saveReminders(data) {
+	writeFileSync(filePath, JSON.stringify(data, null, 2));
+}
 
-let reminders = {}; // In-memory reminder storage
-let clientInstance; // To store the Discord client instance for sending messages
-
-// Function to load reminders from JSON and start checking
-export function setupReminders(client) {
-	clientInstance = client;
-
-	// Load reminders from JSON file
-	if (fs.existsSync("./reminders.json")) {
-		const data = fs.readFileSync("./reminders.json");
-		reminders = JSON.parse(data);
+/**
+ * Generates a unique reminder ID for a user. It checks the unused IDs list first,
+ * and if no unused IDs are available, it generates a new one based on the current
+ * maximum reminder ID.
+ *
+ * @param {Object} data - The entire reminders data structure.
+ * @param {String} userId - The ID of the user for whom to generate the reminder ID.
+ * @returns {Number} A new unique reminder ID.
+ */
+function generateReminderId(data, userId) {
+	// Check if there are any unused IDs available
+	if (data.unusedIds && data.unusedIds.length > 0) {
+		return data.unusedIds.shift(); // Use and remove the first available unused ID
 	}
 
-	// Check reminders every second
-	setInterval(() => {
-		checkReminders();
-	}, 1000);
-}
-
-// Add a new reminder and save it to the JSON file
-function addReminder(userId, reminderData) {
-	if (!reminders[userId]) {
-		reminders[userId] = [];
+	// If no reminders exist for the user, start with ID 1
+	if (data[userId] && data[userId].reminders.length > 0) {
+		const reminderIds = data[userId].reminders.map((r) => parseInt(r.reminderId));
+		return Math.max(...reminderIds) + 1; // Generate new ID by incrementing the highest existing ID
 	}
 
-	const reminderId = Date.now().toString();
-	reminderData.id = reminderId;
-
-	reminders[userId].push(reminderData);
-	saveReminders();
-
-	return reminderId;
+	return 1; // If it's the first reminder for this user, the ID starts at 1
 }
 
-// Save all reminders to the JSON file
-function saveReminders() {
-	fs.writeFileSync("./reminders.json", JSON.stringify(reminders, null, 2));
-}
+/**
+ * Adds a new reminder for the specified user. The reminder includes the message,
+ * date, time, and channel details. It also saves the reminder immediately to
+ * the JSON file.
+ *
+ * @param {String} userId - The ID of the user.
+ * @param {String} message - The reminder message.
+ * @param {Number} year - The year of the reminder.
+ * @param {Number} month - The month of the reminder.
+ * @param {Number} day - The day of the reminder.
+ * @param {Number} hour - The hour of the reminder.
+ * @param {Number} minute - The minute of the reminder.
+ * @param {String} channelId - The channel ID associated with the reminder.
+ */
+export function addReminder(userId, message, year, month, day, hour, minute, channelId) {
+	const data = loadReminders();
 
-// Remove a reminder by its ID
-function removeReminder(userId, reminderId) {
-	if (reminders[userId]) {
-		reminders[userId] = reminders[userId].filter((rem) => rem.id !== reminderId);
-		saveReminders();
+	// Initialize the user's reminder list if not already present
+	if (!data[userId]) {
+		data[userId] = { reminders: [] };
 	}
-}
 
-// Check reminders and trigger if any are due
-function checkReminders() {
-	const now = new Date();
+	// Generate a new reminder ID
+	const reminderId = generateReminderId(data, userId);
 
-	Object.keys(reminders).forEach((userId) => {
-		reminders[userId].forEach((reminder) => {
-			const reminderDate = new Date(reminder.year, reminder.month - 1, reminder.day, reminder.hour, reminder.minute);
-			if (now >= reminderDate) {
-				const channel = reminder.channelId ? clientInstance.channels.cache.get(reminder.channelId) : clientInstance.users.cache.get(userId);
-
-				if (channel) {
-					channel.send(reminder.message).catch((err) => console.error(err));
-				}
-
-				removeReminder(userId, reminder.id);
-			}
-		});
-	});
-}
-
-// Create a new reminder
-export function handleReminderCommand(userid, day, month, year, hour, minute, ChannelId) {
-	const [day, month, year, hour, minute, ...reminderMessage] = args;
-
-	const reminder = {
-		day: parseInt(day),
-		month: parseInt(month),
-		year: parseInt(year),
-		hour: parseInt(hour),
-		minute: parseInt(minute),
-		message: reminderMessage.join(" "),
-		channelId: ChannelId === "null" ? null : ChannelId,
+	// Create the new reminder object
+	const newReminder = {
+		reminderId: reminderId.toString(),
+		message,
+		year,
+		month,
+		day,
+		hour,
+		minute,
+		channelId,
 	};
 
-	const reminderId = addReminder(userid, reminder);
-	message.reply(`Reminder set with ID: ${reminderId}`);
+	// Add the reminder to the user's list and save the data to JSON
+	data[userId].reminders.push(newReminder);
+	saveReminders(data);
+
+	console.log("Reminder added successfully.");
 }
 
-// Remove a reminder by its ID
-export function handleRemoveReminderCommand(message, args) {
-	const reminderId = args[0];
+/**
+ * Deletes a reminder for a user based on the reminder ID. The reminder is also
+ * removed from the JSON file and the deleted reminder's ID is stored in the
+ * unused IDs list for potential reuse.
+ *
+ * @param {String} userId - The ID of the user.
+ * @param {String} reminderId - The ID of the reminder to delete.
+ */
+export function deleteReminder(userId, reminderId) {
+	const data = loadReminders();
 
-	if (!reminderId) {
-		return message.reply("Please provide a reminder ID. Usage: !remindremove <reminderID>");
+	if (data[userId]) {
+		const reminders = data[userId].reminders;
+		const index = reminders.findIndex((r) => r.reminderId === reminderId);
+
+		if (index !== -1) {
+			reminders.splice(index, 1); // Remove the reminder
+
+			// Add the deleted reminder ID to the unused IDs list
+			if (!data.unusedIds) {
+				data.unusedIds = [];
+			}
+			data.unusedIds.push(parseInt(reminderId));
+
+			saveReminders(data);
+			console.log(`Reminder with ID ${reminderId} deleted successfully.`);
+		} else {
+			console.log("Reminder not found.");
+		}
+	} else {
+		console.log("User not found.");
 	}
-
-	removeReminder(message.author.id, reminderId);
-	message.reply(`Reminder with ID: ${reminderId} has been removed.`);
 }
 
-// Function to get reminders for a specific user in a readable format
-export function getUserReminders(userId) {
-	if (!reminders[userId] || reminders[userId].length === 0) {
-		return `No reminders found for user with ID: ${userId}`;
+/**
+ * Initializes the reminder data when the project starts. This function loads
+ * the reminders from the JSON file, ensuring that all reminders and unused
+ * IDs are restored from the last session.
+ *
+ * @returns {Object} The loaded reminders data from the JSON file.
+ */
+export function initializeReminders() {
+	const data = loadReminders();
+	console.log("Reminders loaded successfully.");
+	return data;
+}
+
+/**
+ * Returns a formatted string of reminders for a specific user.
+ * The format will include the reminder date, time, and message.
+ *
+ * @param {String} userId - The ID of the user whose reminders will be retrieved.
+ * @returns {String} A formatted string with all reminders for the user.
+ */
+export function getFormattedReminders(userId) {
+	const data = loadReminders(); // Load reminders from the JSON file
+
+	if (!data[userId] || data[userId].reminders.length === 0) {
+		return `User with ID ${userId} has no reminders.`;
 	}
 
-	let reminderList = `Reminders for user with ID: ${userId}:\n`;
+	// Start building the formatted string
+	let reminderString = `Reminders for user ID ${userId}:\n`;
 
-	reminders[userId].forEach((reminder) => {
-		const reminderType = reminder.channelId ? `Message will be sent to channel ID: ${reminder.channelId}` : "ReminderType: DM";
-		reminderList += `\n[ReminderID = ${reminder.id}, Reminder Message = "${reminder.message}", Date = ${reminder.day}/${reminder.month}/${reminder.year}, Time = ${reminder.hour}:${reminder.minute}, ${reminderType}]`;
+	data[userId].reminders.forEach((reminder) => {
+		reminderString += `Reminder ID: ${reminder.reminderId}\n`;
+		reminderString += `Date: ${reminder.day}/${reminder.month}/${reminder.year}\n`;
+		reminderString += `Time: ${reminder.hour}:${reminder.minute}\n`;
+		reminderString += `Message: ${reminder.message}\n`;
+		reminderString += `Channel ID: ${reminder.channelId}\n`;
+		reminderString += `---------------------------------\n`;
 	});
 
-	return reminderList;
+	return reminderString;
 }

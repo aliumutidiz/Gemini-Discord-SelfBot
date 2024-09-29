@@ -3,6 +3,13 @@
 import { getFreeGamesString } from "../Extras/EpicGamesFreeGames.mjs";
 import { waitForImageCreation } from "../Utils/generateImageUtils.mjs";
 import { GetRandomImageUrl } from "../Extras/PrntScGetRandomImage.mjs";
+import { IsAnAnomaly } from "./AnomalyCatcher.mjs";
+import { addUserToBlacklist, isUserBlacklisted } from "../Utils/blacklistUtils.mjs";
+import { removeUser } from "../Utils/userHistory.mjs";
+
+import dotenv from "dotenv";
+dotenv.config();
+const AdminDiscordID = process.env.ADMIN_DISCORD_ID;
 
 /**
  * Formats the provided answer by handling special placeholders and
@@ -14,6 +21,13 @@ import { GetRandomImageUrl } from "../Extras/PrntScGetRandomImage.mjs";
  */
 export async function FormatAnswer(answer, message) {
 	let formattedAnswer = answer;
+
+	if (message.author.id === AdminDiscordID) {
+		formattedAnswer = formattedAnswer.replace(`{${message.author.id}-admin}`, "");
+		formattedAnswer = formattedAnswer.replace(`<@${message.author.id}-admin>`, `<@${message.author.id}>`);
+	} else {
+		formattedAnswer = formattedAnswer.replace(`{${message.author.id}}`, "");
+	}
 
 	// Check if the answer contains the {draw-image} placeholder
 	const drawMatch = answer.match(/\{draw-image\}\[(.*?)\]/);
@@ -76,6 +90,15 @@ export async function FormatAnswer(answer, message) {
 
 		// Log that the {draw-image} placeholder was found and image generation is in progress
 		console.log("Image generation process started for {draw-image}.");
+	}
+
+	if (await IsAnAnomaly(formattedAnswer.replace())) {
+		if (isUserBlacklisted(message.author.id)) {
+			addUserToBlacklist(message.author.id);
+			removeUser(message.channel.id, message.author.id);
+			await message.react("💀");
+			return "Anomaly detected: You have been blacklisted";
+		}
 	}
 
 	// Return the formatted answer immediately without waiting for the asynchronous image creation
