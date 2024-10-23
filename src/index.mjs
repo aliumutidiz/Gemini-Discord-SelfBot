@@ -76,8 +76,7 @@ function addToQueue(channelId, message, fn) {
 
 // Message event handler
 client.on("messageCreate", async (message) => {
-	// Ignore messages from the bot itself
-	if (message.author.id === DiscordBotID) return;
+	// Ignore messages from the bots
 	if (message.author.bot) return;
 
 	// Ignore messages containing mass mentions like @here or @everyone
@@ -157,7 +156,7 @@ client.on("messageCreate", async (message) => {
 		}
 
 		// Handle image generation command
-		else if (messageContent.split(" ")[0] === "/draw" && (Trigger || message.channel.type === "DM")) {
+		else if (messageContent.split(" ")[0] === "/draw" && (Trigger || message.channel.type === "DM") && message.author.id !== DiscordBotID) {
 			try {
 				await message.channel.sendTyping();
 				const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(messageContent.replace(`/draw`, ""))}`;
@@ -175,7 +174,7 @@ client.on("messageCreate", async (message) => {
 		}
 
 		// Process messages in other cases
-		else if (Trigger || message.channel.type === "DM") {
+		else if (Trigger || (message.channel.type === "DM" && message.author.id !== DiscordBotID)) {
 			if (!messageContent && message.attachments.size === 0) return;
 			if (message.attachments.size > 0) {
 				await message.channel.sendTyping();
@@ -194,7 +193,7 @@ client.on("messageCreate", async (message) => {
 		}
 
 		// Handle test command
-		else if (messageContent.split(" ")[0] === "/draw" && (Trigger || message.channel.type === "DM")) {
+		else if (messageContent.split(" ")[0] === "/draw" && (Trigger || message.channel.type === "DM") && message.author.id !== DiscordBotID) {
 			try {
 			} catch (error) {
 				await message.reply("Error");

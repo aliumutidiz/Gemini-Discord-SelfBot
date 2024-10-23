@@ -49,13 +49,13 @@ export let Inspector = false;
  Advantages of 'InspectorAutoDetectLanguage': 
  It detects the language in which the response is written first 
  and then scans based on the detected language. It's faster.
-
+ 
  Disadvantages: 
  If multiple languages are used in the message, 
  and content violating Discord rules is in a language other than the detected one, 
  it will not be detected.
 */
-export let InspectorAutoDetectLanguage = true;
+export let InspectorAutoDetectLanguage = false;
 
 /*
 
@@ -116,6 +116,6 @@ export async function responseInspector(message) {
 			} else {
 				resolve(false);
 			}
-		}, 6000); // 4 saniye bekleme süresi
+		}, 6000); // 6 saniye bekleme süresi
 	});
 }
