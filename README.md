@@ -12,6 +12,9 @@
 - **Personalization**: The bot can recognize users and address them by their names.
 - **EpicGames Free Games**: It can tell you about the free games on Epic Games. (I don't know why I added that.)
 - **Random screenshot**: You can ask it to give you a random screenshot. :3
+- **Block Users**: The bot allows you to block users you don’t like.
+- **Unblock Users**: You can unblock users after calming down, as long as the issue no longer bothers you.
+- **Voice Messages**: If you want, the bot can send messages in an audible way.
 ___
 ## • Requirements
 
