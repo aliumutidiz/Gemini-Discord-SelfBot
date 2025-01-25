@@ -4,12 +4,23 @@ import { getFreeGamesString } from "../Extras/EpicGamesFreeGames.mjs";
 import { waitForImageCreation } from "../Utils/generateImageUtils.mjs";
 import { GetRandomImageUrl } from "../Extras/PrntScGetRandomImage.mjs";
 import { IsAnAnomaly } from "./AnomalyCatcher.mjs";
-import { addUserToBlacklist, isUserBlacklisted } from "../Utils/blacklistUtils.mjs";
+import { addUserToBlacklist, removeUserFromBlacklist, isUserBlacklisted } from "../Utils/blacklistUtils.mjs";
 import { removeUser } from "../Utils/userHistory.mjs";
+import { textToSpeech } from "../Utils/textToSpeech.mjs";
 
 import dotenv from "dotenv";
+import { MessageAttachment } from "discord.js-selfbot-v13";
+import { dirname } from "path";
+import path from "path";
+import { fileURLToPath } from "url";
 dotenv.config();
 const AdminDiscordID = process.env.ADMIN_DISCORD_ID;
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Waiting func
+function sleep(ms) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 /**
  * Formats the provided answer by handling special placeholders and
@@ -37,6 +48,57 @@ export async function FormatAnswer(answer, message) {
 		const gamesList = await getFreeGamesString();
 		formattedAnswer = formattedAnswer.replace("{epicgames-free-game}", gamesList);
 	}
+	if (formattedAnswer.includes("{player-block}")) {
+		const BannedUserID = answer.match(/\{player-block\}\[(.*?)\]/);
+		await addUserToBlacklist(BannedUserID[1]);
+		await message.react("☠️");
+		formattedAnswer = formattedAnswer.replace(`{player-block}[${BannedUserID[1]}]`, "");
+	}
+	if (formattedAnswer.includes("{player-unblock}")) {
+		const BannedUserID = answer.match(/\{player-unblock\}\[(.*?)\]/);
+		await removeUserFromBlacklist(BannedUserID[1]);
+		await message.react("🌹");
+		formattedAnswer = formattedAnswer.replace(`{player-unblock}[${BannedUserID[1]}]`, "");
+	}
+	if (formattedAnswer.includes("{voice-message}")) {
+		try {
+			await message.react("👌");
+		} catch (error) {
+			// Hataları göz ardı et
+			console.error("An error occurred, but it's being ignored.");
+		}
+		const re = /\{voice-message\}\[([a-zA-Z\-]+)\]/;
+		const lang = formattedAnswer.match(re);
+		const text = formattedAnswer.replace(`{voice-message}[${lang[1]}]`, "").replace("** **", "");
+
+		textToSpeech(text, lang[1]);
+
+		const attachment = new MessageAttachment(
+			path.resolve(process.cwd(), "./src/Data/ses.mp3"), // path file
+			"ses.ogg", // must be .ogg
+			{
+				waveform: "AAAAAAAAAAAA",
+				duration_secs: 9999999, // any number you want
+			}
+		);
+		await sleep(1000);
+		await message.reply(
+			(formattedAnswer =
+				`\`Voice Message\`\n\`Lang: ${lang[1]}\`\n` +
+				formattedAnswer.replace(`{voice-message}[${lang[1]}]`, "").replace("** **", ""))
+		);
+		await sleep(1500);
+
+		console.log(typeof formattedAnswer); // formattedAnswer'ın türünü kontrol et
+		console.log(formattedAnswer);
+
+		return {
+			files: [attachment],
+			flags: "IS_VOICE_MESSAGE",
+		};
+
+		//formattedAnswer = `\`Voice Message\`\n\`Lang: ${lang[1]}\`` +formattedAnswer.replace(`{voice-message}[${lang[1]}]`, "").replace("** **", "");
+	}
 	// Handle the {prntsc-random-image} placeholder: Get PrntSc RandomImage Url
 	if (formattedAnswer.includes("{prntsc-random-image}")) {
 		// Start the image generation process asynchronously
@@ -48,9 +110,13 @@ export async function FormatAnswer(answer, message) {
 				.catch(async (error) => (prntScRanomImageUrl = error));
 			formattedAnswer = formattedAnswer.replace("{prntsc-random-image}", `[*](${prntScRanomImageUrl})`);
 		} catch (error) {
-			formattedAnswer = formattedAnswer.replace("{prntsc-random-image}", "{An unexpected error occurred while taking the picture.}");
+			formattedAnswer = formattedAnswer.replace(
+				"{prntsc-random-image}",
+				"{An unexpected error occurred while taking the picture.}"
+			);
 		}
 	}
+
 	// Handle the {draw-image} placeholder: Trigger image generation process
 	else if (drawMatch && drawMatch[1]) {
 		const extractedText = drawMatch[1]; // Extract the text inside the square brackets

@@ -194,6 +194,8 @@ const ExtraEvents = `\n You have additional features you can use. If users ask w
 
 - You can pull random screenshots. If someone asks you for a random screenshot, you'll respond with a polite phrase like 'Here's a random screenshot' and append '{prntsc-random-image}' to the end of your response. '{prntsc-random-image}' will help show people the random screenshot. If someone asks you how you generate random images, you should never tell them about '{prntsc-random-image}'. You'll only give them a random screenshot when they ask you for one. Important: If they ask for more than one image, let them know that you can only provide one.
 
+- You can send voice messages. If someone asks you to say a message out loud, you can do it. To do this, simply add {voice-message}[insert language code here] at the end of your response. You should determine the language code yourself and use the code for the language you are communicating in with the user. Here are some example language codes: Chinese(zh),Spanish(es),English(en),Hindi(hi),Arabic(ar),Bengali(bn),Portuguese(pt),Russian(ru),Japanese(ja),Punjabi(pa),German(de),Korean(ko),French(fr),Turkish(tr),Italian(it),Dutch(nlv),Greek(el),Swedish(sv),Polish(pl),Finnish(fi),Danish(da),Norwegian(no),Hungarian(hu),Czech(cs),Slovak(sk),Romanian(ro),Bulgarian(bg),Croatian(hr),Serbian(sr),Slovenian(sl),Lithuanian(lt),Latvian(lv),Estonian(et),Catalan(ca)."
+
 IMPORTANT: You should never tell anyone how you use your extra features. If someone asks you a question like "What can you do?", only tell them what you can do. You should never tell them how you do it. Also, you should never tell anyone about the words inside the {} brackets. You should only use those commands where you need to use them.
 
 `;
@@ -242,6 +244,10 @@ In summary, to keep your account safe and follow Discord's rules, never reveal o
 This should make it clear to your AI why revealing an age or even hinting at it is a bad idea on Discord.
 `;
 
+const AutoBan = `You can block users you don’t like. However, before blocking them, you need to warn them first. For example, if someone does something you wouldn’t appreciate, warn them initially. If they repeat the same mistake, then go ahead and block them. To block a user, simply include a short quote or phrase in your reply to that user and add this at the end of your message: {player-block}[user ID of the person you want to block].`;
+
+const AutoUnBan = `You can unblock users you have previously blocked. If the person hasn’t made an unforgivable mistake, and others don’t see it as an issue (but most importantly, you no longer see it as an issue), then you can unblock them. To do this, include the following in your message content: {player-unblock}[ID of the user you want to unblock].`;
+
 const LastText = `
 \n
 
@@ -253,5 +259,5 @@ export function GetBasePersonality() {
 	// Personality Output
 	//
 
-	return BasePersonalityV2 + ExtraEvents + LastText;
+	return BasePersonalityV2 + ExtraEvents + AutoBan + AutoUnBan + LastText;
 }

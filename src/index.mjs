@@ -7,9 +7,22 @@ import { addUser, removeUser, removeGroup, getUsersFromGroup } from "./Utils/use
 import { handleMessage } from "./Utils/personalityManager.mjs";
 import { checkImageStatus, waitForImageCreation } from "./Utils/generateImageUtils.mjs";
 import { SetupRichPresence } from "./Config/SelfBotRichPresence.mjs";
-import { saveChatHistories, loadChatHistories, resetChatHistory, cleanChatHistory, updateChatHistory, getChatHistory } from "./Utils/chatHistory.mjs";
+import {
+	saveChatHistories,
+	loadChatHistories,
+	resetChatHistory,
+	cleanChatHistory,
+	updateChatHistory,
+	getChatHistory,
+} from "./Utils/chatHistory.mjs";
 import { addUserToBlacklist, removeUserFromBlacklist, isUserBlacklisted } from "./Utils/blacklistUtils.mjs";
-import { addTriggerWord, removeTriggerWord, checkMessageForWords, loadData, saveData } from "./Modules/triggerManager.mjs";
+import {
+	addTriggerWord,
+	removeTriggerWord,
+	checkMessageForWords,
+	loadData,
+	saveData,
+} from "./Modules/triggerManager.mjs";
 
 // Import required classes from the discord.js-selfbot-v13 library
 import { Client as DiscordClient } from "discord.js-selfbot-v13";
@@ -78,6 +91,7 @@ function addToQueue(channelId, message, fn) {
 client.on("messageCreate", async (message) => {
 	// Ignore messages from the bots
 	if (message.author.bot) return;
+	if (message.author.id === client.id) return;
 
 	// Ignore messages containing mass mentions like @here or @everyone
 	if (message.content.includes("@here") || message.content.includes("@everyone")) return;
@@ -129,12 +143,21 @@ client.on("messageCreate", async (message) => {
 		}
 
 		// Handle admin commands
-		else if (messageContent === "clearchatdata" && (message.channel.type === "DM" || message.author.id === ADMIN_DISCORD_ID)) {
+		else if (
+			messageContent === "clearchatdata" &&
+			(message.channel.type === "DM" || message.author.id === ADMIN_DISCORD_ID)
+		) {
 			await resetChatHistory(message);
-		} else if (messageContent === "clearuserdata" && (message.channel.type === "DM" || message.author.id === ADMIN_DISCORD_ID)) {
+		} else if (
+			messageContent === "clearuserdata" &&
+			(message.channel.type === "DM" || message.author.id === ADMIN_DISCORD_ID)
+		) {
 			await removeGroup(channelId);
 			await message.react("👍");
-		} else if (messageContent === "clearchanneldata" && (message.channel.type === "DM" || message.author.id === ADMIN_DISCORD_ID)) {
+		} else if (
+			messageContent === "clearchanneldata" &&
+			(message.channel.type === "DM" || message.author.id === ADMIN_DISCORD_ID)
+		) {
 			await removeGroup(channelId);
 			await resetChatHistory(message);
 		} else if (message.author.id === ADMIN_DISCORD_ID && messageContent.split(" ")[0] === "blacklist") {
@@ -156,10 +179,16 @@ client.on("messageCreate", async (message) => {
 		}
 
 		// Handle image generation command
-		else if (messageContent.split(" ")[0] === "/draw" && (Trigger || message.channel.type === "DM") && message.author.id !== DiscordBotID) {
+		else if (
+			messageContent.split(" ")[0] === "/draw" &&
+			(Trigger || message.channel.type === "DM") &&
+			message.author.id !== DiscordBotID
+		) {
 			try {
 				await message.channel.sendTyping();
-				const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(messageContent.replace(`/draw`, ""))}`;
+				const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(
+					messageContent.replace(`/draw`, "")
+				)}`;
 				await message.react("👍");
 				const resultUrl = await waitForImageCreation(imageUrl);
 				if (resultUrl) {
@@ -193,7 +222,11 @@ client.on("messageCreate", async (message) => {
 		}
 
 		// Handle test command
-		else if (messageContent.split(" ")[0] === "/draw" && (Trigger || message.channel.type === "DM") && message.author.id !== DiscordBotID) {
+		else if (
+			messageContent.split(" ")[0] === "/draw" &&
+			(Trigger || message.channel.type === "DM") &&
+			message.author.id !== DiscordBotID
+		) {
 			try {
 			} catch (error) {
 				await message.reply("Error");
